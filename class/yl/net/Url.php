@@ -11,7 +11,7 @@ class Url
 {
   const CNAME = __CLASS__;
 
-  static private $protocol = array(
+  static private $protocols = array(
     'http' => 80, 'ftp' => 21
   );
 
@@ -30,8 +30,8 @@ class Url
    * @param string $v
    * @return Url
    */
-  public static function create($v = null) {
-
+  public static function create($v = null)
+  {
     $url = null;
 
     if (is_null($v))
@@ -48,7 +48,8 @@ class Url
     return $url;
   }
 
-  public function getProtocol() {
+  public function getProtocol()
+  {
     return $this->parts['scheme'];
   }
 
@@ -57,22 +58,26 @@ class Url
    * @throws Exception
    * @return Url
    */
-  public function setProtocol($s) {
-    if (array_key_exists(strtolower($s), self::$protocol) === false)
+  public function setProtocol($s)
+  {
+    $protocols = self::$protocols;
+
+    if (array_key_exists(strtolower($s), $protocols) === false)
       throw new Exception("Unsupported protocol '{$s}'");
 
     if (
-      isset(self::$protocol[strtolower($this->parts['scheme'])]) &&
-      self::$protocol[strtolower($this->parts['scheme'])] == $this->parts['port']
+      isset($protocols[strtolower($this->parts['scheme'])]) &&
+      $protocols[strtolower($this->parts['scheme'])] == $this->parts['port']
     )
-      $this->parts['port'] = self::$protocol[strtolower($s)];
+      $this->parts['port'] = $protocols[strtolower($s)];
 
     $this->parts['scheme'] = $s;
 
     return $this;
   }
 
-  public function getUser() {
+  public function getUser()
+  {
     return $this->parts['user'];
   }
 
@@ -80,7 +85,8 @@ class Url
    * @param string $s
    * @return Url
    */
-  public function setUser($s) {
+  public function setUser($s)
+  {
     $this->parts['user'] = $s;
 
     return $this;
@@ -89,7 +95,8 @@ class Url
   /**
    * @return string
    */
-  public function getPassword() {
+  public function getPassword()
+  {
     return $this->parts['pass'];
   }
 
@@ -97,7 +104,8 @@ class Url
    * @param string $s
    * @return Url
    */
-  public function setPassword($s) {
+  public function setPassword($s)
+  {
     $this->parts['pass'] = $s;
     return $this;
   }
@@ -105,7 +113,8 @@ class Url
   /**
    * @return string
    */
-  public function getHost() {
+  public function getHost()
+  {
     return $this->parts['host'];
   }
 
@@ -113,7 +122,8 @@ class Url
    * @param string $s
    * @return Url
    */
-  public function setHost($s) {
+  public function setHost($s)
+  {
     if (preg_match('/[^a-z-\.]/', $s))
       throw new Exception("Host {$s} is invalid");
 
@@ -124,7 +134,8 @@ class Url
   /**
    * @return string
    */
-  public function getPort() {
+  public function getPort()
+  {
     if ($this->parts['port'])
       $port = $this->parts['port'];
 
@@ -138,7 +149,8 @@ class Url
    * @param string $s
    * @return Url
    */
-  public function setPort($i) {
+  public function setPort($i)
+  {
     $this->parts['port'] = (int) $i;
     return $this;
   }
@@ -146,7 +158,8 @@ class Url
   /**
    * @return string
    */
-  public function getPath() {
+  public function getPath()
+  {
     return $this->parts['path'];
   }
 
@@ -154,7 +167,8 @@ class Url
    * @param string $s
    * @return Url
    */
-  public function setPath($s) {
+  public function setPath($s)
+  {
     $this->parts['path'] = $s;
     return $this;
   }
@@ -163,7 +177,8 @@ class Url
    * @param string $key
    * @return mixed
    */
-  public function getQuery($key) {
+  public function getQuery($key)
+  {
     return $this->parts['query'][$key];
   }
 
@@ -171,7 +186,8 @@ class Url
    * @param string $s
    * @return Url
    */
-  public function setQuery($key, $value) {
+  public function setQuery($key, $value)
+  {
     $this->parts['query'][$key] = $value;
     return $this;
   }
@@ -179,14 +195,16 @@ class Url
   /**
    * @return array
    */
-  public function getQueries() {
+  public function getQueries()
+  {
     return $this->parts['query'];
   }
 
   /**
    * @return string
    */
-  public function getFragment() {
+  public function getFragment()
+  {
     return $this->parts['fragment'];
   }
 
@@ -194,12 +212,14 @@ class Url
    * @param string $s
    * @return Url
    */
-  public function setFragment($s) {
+  public function setFragment($s)
+  {
     $this->parts['fragment'] = $s;
     return $this;
   }
 
-  public function parse($url) {
+  public function parse($url)
+  {
     $parts = parse_url($url);
 
     if (isset($parts['query'])) {
@@ -215,8 +235,43 @@ class Url
     }
 
     if (!$this->parts['port'] && $this->parts['scheme'])
-      $this->parts['port'] = self::$protocol[$this->parts['scheme']];
+      $this->parts['port'] = self::$protocols[$this->parts['scheme']];
+  }
 
+  /**
+   * @return string
+   */
+  private function buildUserPass() {
+    $s = '';
+
+    if ($this->parts['pass'])
+      $s .= (
+        urlencode($this->parts['user']) .
+        ':' .
+        urlencode($this->parts['pass'])
+      );
+    else
+      $s .= urlencode($this->parts['user']);
+
+    return $s;
+  }
+
+  /**
+   * @return string
+   */
+  private function buildQueries()
+  {
+    $query = '';
+    foreach($this->parts['query'] as $key => $value) {
+      $query .= (
+        ($query ? '&' : '') .
+        urlencode($key) .
+        '=' .
+        urlencode($value)
+      );
+    }
+
+    return $query;
   }
 
   /**
@@ -232,30 +287,23 @@ class Url
       $url = 'http://';
 
     if ($this->parts['user'] || $this->parts['pass']) {
-      if ($this->parts['pass'])
-        $url .= urlencode($this->parts['user']) . ':' . urlencode($this->parts['pass']);
-      else
-        $url .= urlencode($this->parts['user']);
-
-      $url .= '@';
+      $url .= $this->buildUserPass() . '@';
     }
 
     if ($this->parts['host'])
       $url .= $this->parts['host'];
 
-    if ($this->parts['port'] && $this->parts['port'] != self::$protocol[$this->parts['scheme']])
+    if (
+      $this->parts['port'] &&
+      $this->parts['port'] != self::$protocols[$this->parts['scheme']]
+    )
       $url .= ':' . $this->parts['port'];
 
     if ($this->parts['path'])
       $url .= $this->parts['path'];
 
     if ($this->parts['query']) {
-      $query = '';
-
-      foreach($this->parts['query'] as $key => $value)
-        $query .= ($query ? '&' : '') . urlencode($key) . '=' . urlencode($value);
-
-      $url .= '?' . $query;
+      $url .= '?' . $this->buildQueries();
     }
 
     if ($this->parts['fragment'])
