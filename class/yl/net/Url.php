@@ -1,7 +1,16 @@
 <?php
 
+namespace yl\net;
+
+/**
+ * @package    PHP
+ * @subpackage Net
+ * @author     Yanik Lupien
+ */
 class Url
 {
+  const CNAME = __CLASS__;
+
   static private $protocol = array(
     'http' => 80, 'ftp' => 21
   );
@@ -50,7 +59,13 @@ class Url
    */
   public function setProtocol($s) {
     if (array_key_exists(strtolower($s), self::$protocol) === false)
-      throw new Exception('Invalid protocol');
+      throw new Exception("Unsupported protocol '{$s}'");
+
+    if (
+      isset(self::$protocol[strtolower($this->parts['scheme'])]) &&
+      self::$protocol[strtolower($this->parts['scheme'])] == $this->parts['port']
+    )
+      $this->parts['port'] = self::$protocol[strtolower($s)];
 
     $this->parts['scheme'] = $s;
 
@@ -159,6 +174,13 @@ class Url
   public function setQuery($key, $value) {
     $this->parts['query'][$key] = $value;
     return $this;
+  }
+
+  /**
+   * @return array
+   */
+  public function getQueries() {
+    return $this->parts['query'];
   }
 
   /**
