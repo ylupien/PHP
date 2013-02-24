@@ -48,6 +48,9 @@ class Url
     return $url;
   }
 
+  /**
+   * @return string
+   */
   public function getProtocol()
   {
     return $this->parts['scheme'];
@@ -76,6 +79,9 @@ class Url
     return $this;
   }
 
+  /**
+   * @return string
+   */
   public function getUser()
   {
     return $this->parts['user'];
@@ -241,7 +247,8 @@ class Url
   /**
    * @return string
    */
-  private function buildUserPass() {
+  private function buildUserPass()
+  {
     $s = '';
 
     if ($this->parts['pass'])
@@ -262,7 +269,7 @@ class Url
   private function buildQueries()
   {
     $query = '';
-    foreach($this->parts['query'] as $key => $value) {
+    foreach ($this->parts['query'] as $key => $value) {
       $query .= (
         ($query ? '&' : '') .
         urlencode($key) .
