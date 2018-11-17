@@ -3,3 +3,13 @@ php:
  - 7.1
 install: 
  - composer install
+
+deploy:
+  - provider: script
+    script: bash scripts/deploy.sh staging
+    on:
+      branch: develop
+  - provider: script
+    script: bash scripts/deploy.sh production
+    on:
+      branch: master
