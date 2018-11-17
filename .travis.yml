@@ -8,7 +8,7 @@ deploy:
   - provider: script
     script: bash scripts/deploy.sh staging
     on:
-      branch: develop
+      all_branches: true
   - provider: script
     script: bash scripts/deploy.sh production
     on:
