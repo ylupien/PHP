@@ -9,7 +9,7 @@ deploy:
     skip_cleanup: true
     script: bash scripts/deploy.sh staging
     on:
-      branches: preprod
+      branch: preprod
   - provider: script
     skip_cleanup: true
     script: bash scripts/deploy.sh production
