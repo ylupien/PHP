@@ -43,7 +43,7 @@ class Url
     }
 
     if ($url === null)
-      throw new Exception("Failed to create url");
+      throw new \Exception("Failed to create url");
 
     return $url;
   }
@@ -66,7 +66,7 @@ class Url
     $protocols = self::$protocols;
 
     if (array_key_exists(strtolower($s), $protocols) === false)
-      throw new Exception("Unsupported protocol '{$s}'");
+      throw new \Exception("Unsupported protocol '{$s}'");
 
     if (
       isset($protocols[strtolower($this->parts['scheme'])]) &&
@@ -131,7 +131,7 @@ class Url
   public function setHost($s)
   {
     if (preg_match('/[^a-z-\.]/', $s))
-      throw new Exception("Host {$s} is invalid");
+      throw new \Exception("Host {$s} is invalid");
 
     $this->parts['host'] = $s;
     return $this;

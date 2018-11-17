@@ -1,0 +1,18 @@
+{
+  "minimum-stability": "stable",
+  "repositories":[
+    { "type":"composer", "url":"https://wpackagist.org" }
+  ],
+  "autoload": {
+    "psr-4": {
+      "yl\\": "class/yl"
+    }
+  },
+  "require": {
+    "php": ">=7.0"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "2.*",
+    "phpunit/phpunit": "^6.5"
+  }
+}
