@@ -1,6 +1,5 @@
 <?php
-require_once('class/yl/php/Autoloader.php');
-yl\php\Autoloader::create()->classPath(__DIR__ . '/class')->register();
+require_once(__DIR__ . '/vendor/autoload.php');
 
 use yl\net\Url;
 
