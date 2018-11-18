@@ -21,7 +21,7 @@ deploy:
     secret_access_key: $secret_access_key
     region: "us-east-1"
     app: "PHP"
-    env: "e-pmfvfj4jcv"
+    env: "Php-env"
     bucket_name: "elasticbeanstalk-us-east-1-342247925588"
     on:
       branch: preprod
