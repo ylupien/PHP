@@ -15,3 +15,13 @@ deploy:
     script: bash scripts/deploy.sh production
     on:
       branch: master
+
+  - provider: elasticbeanstalk
+    access_key_id: $access_key_id
+    secret_access_key: $secret_access_key
+    region: "us-east-1"
+    app: "PHP"
+    env: "e-pmfvfj4jcv"
+    bucket_name: "elasticbeanstalk-us-east-1-342247925588"
+    on:
+      branch: preprod
